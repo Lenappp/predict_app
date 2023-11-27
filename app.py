@@ -84,7 +84,7 @@ def load_model(model_path):
         model = pkl.load(file)
     return model
 
-model_path = Path.cwd() / 'model_1.0.pkl'
+model_path = Path.cwd() / 'model_v1.0.pkl'
 model = load_model(model_path)
 class_labels = {0: 'normal', 1: 'opacity'}
 class_to_idx = {label: index for index, label in class_labels.items()}
@@ -107,14 +107,11 @@ preprocessed_img = load_image()
 
 # аугментации изображения
 transform = v2.Compose([
-        v2.RandomResizedCrop(size=(512, 512), antialias=True),
-        v2.Grayscale(),
+        v2.Resize(size=(512, 512)),
+        v2.Grayscale(num_output_channels=3),
         v2.ToImage(),
-        v2.ToDtype(torch.float32, scale=True),
-        v2.RandomHorizontalFlip(p=0.5),
-        v2.RandomVerticalFlip(p=0.5),
-        v2.Normalize(mean=[0.475, 0.450, 0.403], std=[0.499, 0.450, 0.458])
-        ])    
+        v2.ToDtype(torch.float32, scale=True)
+        ])   
 
 def preprocessing_img(img):
     with torch.no_grad():
